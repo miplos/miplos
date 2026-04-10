@@ -1,6 +1,4 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
@@ -8,13 +6,12 @@ import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
 
 interface Props {
-	title: string;
-	description: string;
-	image?: ImageMetadata;
+  title: string;
+  description: string;
+  image?: ImageMetadata;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
 const { title, description, image = FallbackImage } = Astro.props;
 ---
 
@@ -25,13 +22,12 @@ const { title, description, image = FallbackImage } = Astro.props;
 <link rel="icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
-	rel="alternate"
-	type="application/rss+xml"
-	title={SITE_TITLE}
-	href={new URL('rss.xml', Astro.site)}
+  rel="alternate"
+  type="application/rss+xml"
+  title={SITE_TITLE}
+  href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-
 <Font cssVariable="--font-atkinson" preload />
 
 <!-- Canonical URL -->
@@ -55,3 +51,85 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- Copy Button - Top-right inside code block -->
+<style>
+  .astro-code,
+  pre {
+    position: relative !important;
+    padding: 1.25rem 1.5rem !important;
+    padding-right: 140px !important;
+    background: #1f2937;
+    color: #e5e7eb;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .copy-btn {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    background: #374151;
+    color: #e5e7eb;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.25s ease;
+    z-index: 50;
+  }
+
+  .astro-code:hover .copy-btn,
+  pre:hover .copy-btn {
+    opacity: 1;
+  }
+
+  .copy-btn:hover {
+    background: #24fb97;
+    color: #111827;
+  }
+
+  .copy-btn.copied {
+    background: #10b981;
+    color: white;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.astro-code, pre').forEach(block => {
+      block.style.position = 'relative';
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.innerHTML = '📋 Copy';
+      block.appendChild(btn);
+
+      btn.addEventListener('click', () => {
+        // Clean code - exclude button text
+        let code = '';
+        const codeElement = block.querySelector('code');
+        if (codeElement) {
+          code = codeElement.innerText.trim();
+        } else {
+          code = block.innerText.replace(/📋 Copy$/, '').replace(/✅ Copied!$/, '').trim();
+        }
+
+        navigator.clipboard.writeText(code).then(() => {
+          const original = btn.innerHTML;
+          btn.textContent = '✅ Copied!';
+          btn.classList.add('copied');
+
+          setTimeout(() => {
+            btn.innerHTML = original;
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    });
+  });
+</script>
