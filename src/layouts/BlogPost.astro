@@ -7,80 +7,106 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
-
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+<html lang="de">
+<head>
+  <BaseHead title={title} description={description} />
+  <style>
+    main {
+      width: calc(100% - 2em);
+      max-width: 100%;
+      margin: 0;
+    }
+    .hero-image {
+      width: 100%;
+    }
+    .hero-image img {
+      display: block;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: var(--box-shadow);
+    }
+    .prose {
+      width: 720px;
+      max-width: calc(100% - 2em);
+      margin: auto;
+      padding: 1em;
+      color: rgb(var(--gray-dark));
+    }
+    .title {
+      margin-bottom: 1em;
+      padding: 1em 0;
+      text-align: center;
+      line-height: 1;
+    }
+    .title h1 {
+      margin: 0 0 0.5em 0;
+    }
+    .date {
+      margin-bottom: 0.5em;
+      color: rgb(var(--gray));
+    }
+    .last-updated-on {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <Header />
+  <main>
+    <article>
+      <div class="hero-image">
+        {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+      </div>
+      <div class="prose">
+        <div class="title">
+          <div class="date">
+            <FormattedDate date={pubDate} />
+            {updatedDate && (
+              <div class="last-updated-on">
+                Last updated on <FormattedDate date={updatedDate} />
+              </div>
+            )}
+          </div>
+          <h1>{title}</h1>
+          <hr />
+        </div>
+        <slot />
+      </div>
+    </article>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+    <!-- giscus kommentare – nur bei blog-posts -->
+    <section class="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800 prose mx-auto max-w-[720px]">
+      <h2 class="text-2xl font-medium mb-6 flex items-center gap-3">
+        💬 comments & discussion
+      </h2>
+      <div id="giscus"></div>
+    </section>
+  </main>
+  <Footer />
+
+  <!-- giscus script -->
+  <script is:inline>
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    
+    script.setAttribute('data-repo', 'miplos/miplos');
+    script.setAttribute('data-repo-id', 'R_kgDORrlISA');
+    script.setAttribute('data-category', 'Announcements');
+    script.setAttribute('data-category-id', 'DIC_kwDORrlISM4C6i6h');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '1');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', 'preferred_color_scheme');
+    script.setAttribute('data-lang', 'en');           <!-- englisch wie gewünscht -->
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+
+    document.getElementById('giscus').appendChild(script);
+  </script>
+</body>
 </html>
